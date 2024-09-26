@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'presentation/presentation.dart';
+import 'package:schedrag/presentation/presentation.dart';
 
 void main() => runApp(const Schedrag());
 
@@ -31,10 +31,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
   void _onItemTapped(int index) {
-    setState(() { _selectedIndex = index; });
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   @override
@@ -43,16 +46,24 @@ class _HomePageState extends State<HomePage> {
     switch (_selectedIndex) {
       case 0:
         page = SchedulePage(optionStyle);
-        if (kDebugMode) { print('Page [Schedule] selected'); }
+        if (kDebugMode) {
+          print('Page [Schedule] selected');
+        }
       case 1:
         page = TodoPage(optionStyle);
-        if (kDebugMode) { print('Page [Todo] selected'); }
+        if (kDebugMode) {
+          print('Page [Todo] selected');
+        }
       case 2:
         page = TimetablePage(optionStyle);
-        if (kDebugMode) { print('Page [Timetable] selected'); }
+        if (kDebugMode) {
+          print('Page [Timetable] selected');
+        }
       case 3:
         page = SettingsPage(optionStyle);
-        if (kDebugMode) { print('Page [Settings] selected'); }
+        if (kDebugMode) {
+          print('Page [Settings] selected');
+        }
       default:
         throw UnimplementedError('no widget for $_selectedIndex');
     }
@@ -61,7 +72,6 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: page,
       ),
-
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
@@ -90,7 +100,6 @@ class _HomePageState extends State<HomePage> {
             label: 'Settings',
           ),
         ],
-
       ),
     );
   }

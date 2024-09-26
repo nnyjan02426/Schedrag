@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-class TodoPage extends StatelessWidget{
+class TodoPage extends StatelessWidget {
   final TextStyle optionStyle;
   const TodoPage(this.optionStyle, {super.key});
 
