@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'presentation/presentation.dart';
 
 void main() => runApp(const Schedrag());
 
@@ -38,19 +39,19 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget page = Placeholder();
+    late Widget page;
     switch (_selectedIndex) {
       case 0:
-        page = Text('Schedule', style: optionStyle);
+        page = SchedulePage(optionStyle);
         if (kDebugMode) { print('Page [Schedule] selected'); }
       case 1:
-        page = Text('Todo', style: optionStyle);
+        page = TodoPage(optionStyle);
         if (kDebugMode) { print('Page [Todo] selected'); }
       case 2:
-        page = Text('Timetable', style: optionStyle);
+        page = TimetablePage(optionStyle);
         if (kDebugMode) { print('Page [Timetable] selected'); }
       case 3:
-        page = Text('Settings', style: optionStyle);
+        page = SettingsPage(optionStyle);
         if (kDebugMode) { print('Page [Settings] selected'); }
       default:
         throw UnimplementedError('no widget for $_selectedIndex');
@@ -73,19 +74,19 @@ class _HomePageState extends State<HomePage> {
 
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.today_rounded),
             label: 'Schedule',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.business),
+            icon: Icon(Icons.list),
             label: 'Todo',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.school),
+            icon: Icon(Icons.table_chart),
             label: 'Timetable',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.school),
+            icon: Icon(Icons.settings),
             label: 'Settings',
           ),
         ],
