@@ -28,5 +28,6 @@ class Blocks {
   void removeBlock() {}
 
   // TODO: create file storing api
+  // NOTE: https://stackoverflow.com/questions/51807228/writing-to-a-local-json-file-dart-flutter
   void write2Json() {}
 }
