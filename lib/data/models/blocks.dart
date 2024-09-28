@@ -22,12 +22,12 @@ class _Block {
 }
 
 class Blocks {
-  final Map<String, List<_Block>> categories = {};
+  final Map<String, dynamic> categories = {};
 
   void addBlock() {}
   void removeBlock() {}
 
   // TODO: create file storing api
   // NOTE: https://stackoverflow.com/questions/51807228/writing-to-a-local-json-file-dart-flutter
-  void write2Json() {}
+  void write2file() {}
 }
