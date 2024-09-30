@@ -1,21 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class _Time {
-  DateTime startTime, endTime;
-  late Duration diffTime;
-  _Time(this.startTime, this.endTime, this.diffTime);
-  _Time.noParams()
-      : startTime = DateTime.now(),
-        endTime = DateTime.now() {
-    updateDiffTime();
-  }
-
-  void setStartTime(DateTime newStart) => startTime = newStart;
-  void setEndTime(DateTime newEnd) => endTime = newEnd;
-  void updateDiffTime() => diffTime = startTime.difference(endTime);
-}
-
 abstract class Block {
   final String name;
   String? category = null, notes = null;
