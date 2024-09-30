@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:schedrag/presentation/widgets/block_widgets.dart';
+import 'package:schedrag/data/models/child_blocks.dart';
 
 class TodoPage extends StatelessWidget {
   final TextStyle optionStyle;
@@ -16,14 +16,15 @@ class TodoPage extends StatelessWidget {
     return Scaffold(
       body: ListView(
         children: [
-          for(Map row in table)
-          ListTile(title: Text(row['name']), onTap: () {}),
+          for (Map row in table)
+            ListTile(title: Text(row['name']), onTap: () {}),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         // add new timeblock
         onPressed: () {
           db.insert(TimeBlock('name_$num'));
+          print('name_$num/n');
           num++;
         },
         child: const Icon(Icons.add),

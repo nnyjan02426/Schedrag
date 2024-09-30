@@ -11,7 +11,7 @@ abstract class Block {
   Map<String, Object?> toMap();
 }
 
-class BlocksDb {
+abstract class BlocksDb {
   String dbFilename, tableName, executeSQL;
   bool dbIsOpen = false;
   late final db;
