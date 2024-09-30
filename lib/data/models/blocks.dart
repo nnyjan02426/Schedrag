@@ -16,67 +16,48 @@ class _Time {
   void updateDiffTime() => diffTime = startTime.difference(endTime);
 }
 
-class Block {
+abstract class Block {
   final String name;
-  final String? category, notes;
-  int? id;
+  String? category = null, notes = null;
+  int? id = null;
 
-  //final _Time time;
+  Block(this.name);
 
-  //_Block({required this.id, required this.name, required this.time, this.category=null, this.notes=null});
-  Block(
-      {required this.name,
-      this.id = null,
-      this.category = null,
-      this.notes = null});
-
-  Map<String, Object?> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'category': category,
-      'notes': notes,
-    };
-  }
-  //String block2String(String tablename) {
-  //  return [
-  //    tablename,
-  //    '{id: $id, name: $name, category: $category, notes: $notes}'
-  //  ].join();
-  //}
+  Map<String, Object?> toMap();
 }
 
 class BlocksDb {
-  String dbFilename, tableName;
-  bool dbIsOpen;
+  String dbFilename, tableName, executeSQL;
+  bool dbIsOpen = false;
   late final db;
 
   BlocksDb(
       {required this.dbFilename,
       required this.tableName,
-      this.dbIsOpen = false});
+      required this.executeSQL});
 
   Future open() async {
     db = openDatabase(
       join(await getDatabasesPath(), dbFilename),
       version: 1,
       onCreate: (db, version) async {
-        return await db.execute('''CREATE TABLE $tableName (
-          id INTEGER PRIMARY KEY,
-          name TEXT, category TEXT,
-          spendTime DATETIME,
-          deadline DATETIME,
-          notes TEXT)''');
+        return await db.execute('''CREATE TABLE $tableName ($executeSQL)''');
       },
     );
     dbIsOpen = true;
   }
 
-  Future<Block> insert(Block aBlock) async {
+  Future<List<Map>> getAll() async {
     if (!dbIsOpen) open();
 
-    aBlock.id = await db.insert(tableName, aBlock.toMap());
-    return aBlock;
+    return await db.rawQuery('SELECT * FROM $tableName');
+  }
+
+  Future<Block> insert(Block block) async {
+    if (!dbIsOpen) open();
+
+    block.id = await db.insert(tableName, block.toMap());
+    return block;
   }
 
   Future<int> delete(int id) async {
@@ -96,4 +77,7 @@ class BlocksDb {
     dbIsOpen = false;
     return await db.close();
   }
+
+  Future<int> getCount() async =>
+      await db.execute('SELECT COUNT(*) from $tableName');
 }
