@@ -6,7 +6,10 @@ class TimeBlock extends Block {
    * 2. deadline
    * */
 
-  TimeBlock(super.name);
+  TimeBlock();
+  TimeBlock.name(super.name) : super.name();
+  TimeBlock.detail({super.name, super.category, super.notes, super.id})
+      : super.detail();
 
   @override
   Map<String, Object?> toMap() {
@@ -18,6 +21,16 @@ class TimeBlock extends Block {
       //'deadline': deadline,
       'notes': notes,
     };
+  }
+
+  @override
+  TimeBlock toBlock(Map<String, Object?> data) {
+    return TimeBlock.detail(
+      name: data['name'].toString(),
+      category: data['category'].toString(),
+      notes: data['notes'].toString(),
+      id: int.tryParse(data['id'].toString()),
+    );
   }
 }
 
@@ -34,4 +47,12 @@ class TimeBlocksDb extends BlocksDb {
             dbFilename: 'timeBlock.db',
             tableName: 'Todos',
             executeSQL: _executeSQL);
+
+  Future<List<TimeBlock>?> getAll() async {
+    if (!dbIsOpen) open();
+
+    List<Map<String, Object?>> table =
+        await db.rawQuery('SELECT * FROM $tableName');
+    return table.map((data) => TimeBlock().toBlock(data)).toList();
+  }
 }

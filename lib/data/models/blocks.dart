@@ -2,13 +2,16 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 abstract class Block {
-  final String name;
+  String? name;
   String? category = null, notes = null;
   int? id = null;
 
-  Block(this.name);
+  Block();
+  Block.name(this.name);
+  Block.detail({this.name, this.category, this.notes, this.id});
 
   Map<String, Object?> toMap();
+  Block toBlock(Map<String, Object?> data);
 }
 
 abstract class BlocksDb {
@@ -26,16 +29,11 @@ abstract class BlocksDb {
       join(await getDatabasesPath(), dbFilename),
       version: 1,
       onCreate: (db, version) async {
+        dbIsOpen = true;
+        print('$dbIsOpen');
         return await db.execute('''CREATE TABLE $tableName ($executeSQL)''');
       },
     );
-    dbIsOpen = true;
-  }
-
-  Future<List<Map>> getAll() async {
-    if (!dbIsOpen) open();
-
-    return await db.rawQuery('SELECT * FROM $tableName');
   }
 
   Future<Block> insert(Block block) async {
