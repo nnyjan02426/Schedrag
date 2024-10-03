@@ -1,4 +1,5 @@
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 
 abstract class Block {
@@ -17,23 +18,31 @@ abstract class Block {
 abstract class BlocksDb {
   String dbFilename, tableName, executeSQL;
   bool dbIsOpen = false;
-  late final db;
+  late var db;
 
   BlocksDb(
       {required this.dbFilename,
       required this.tableName,
       required this.executeSQL});
 
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
+
   Future open() async {
-    db = openDatabase(
-      join(await getDatabasesPath(), dbFilename),
+    db = await openDatabase(
+      join(await _localPath, dbFilename),
+      //dbFilename,
       version: 1,
-      onCreate: (db, version) async {
+      onOpen: (db) {
         dbIsOpen = true;
-        print('$dbIsOpen');
-        return await db.execute('''CREATE TABLE $tableName ($executeSQL)''');
+      },
+      onCreate: (db, version) async {
+        await db.execute('''CREATE TABLE $tableName ($executeSQL)''');
       },
     );
+    return null;
   }
 
   Future<Block> insert(Block block) async {

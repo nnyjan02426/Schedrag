@@ -10,7 +10,7 @@ class TodoPage extends StatefulWidget {
 }
 
 class _TodoPageState extends State<TodoPage> {
-  final db = TimeBlocksDb();
+  final TimeBlocksDb db = TimeBlocksDb();
   late Future<List<TimeBlock>?> dbList;
   int num = 0;
 
@@ -35,22 +35,17 @@ class _TodoPageState extends State<TodoPage> {
               },
             );
           } else {
-            return CircularProgressIndicator();
+            return const Center(
+                child: Text("There isn't any todo being created yet."));
           }
         },
         future: dbList,
       ),
-      //body: ListView(
-      //  children: [
-      //    for (var row in db.getAll())
-      //      ListTile(title: Text(row['name']), onTap: () {}),
-      //  ],
-      //),
       floatingActionButton: FloatingActionButton(
         // add new timeblock
         onPressed: () {
           db.insert(TimeBlock.name('name_$num'));
-          print('name_$num/n');
+          print('name_$num\n');
           num++;
         },
         child: const Icon(Icons.add),

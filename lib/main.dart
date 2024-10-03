@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:schedrag/presentation/presentation.dart';
+import 'package:provider/provider.dart';
 import 'dart:io' show Platform;
 
 Future main() async {
@@ -24,10 +25,9 @@ class Schedrag extends StatelessWidget {
     return MaterialApp(
       title: 'Schedrag',
       theme: ThemeData(
-        //colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      //home: const MyHomePage(title: 'Flutter Demo Home Page'),
       home: const HomePage(),
     );
   }
