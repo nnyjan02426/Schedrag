@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
@@ -15,7 +16,7 @@ abstract class Block {
   Block toBlock(Map<String, Object?> data);
 }
 
-abstract class BlocksDb {
+abstract class BlocksDb extends ChangeNotifier {
   String dbFilename, tableName, executeSQL;
   bool dbIsOpen = false;
   late var db;
@@ -49,18 +50,21 @@ abstract class BlocksDb {
     if (!dbIsOpen) open();
 
     block.id = await db.insert(tableName, block.toMap());
+    notifyListeners();
     return block;
   }
 
   Future<int> delete(int id) async {
     if (!dbIsOpen) open();
 
+    notifyListeners();
     return await db.delete(tableName, where: 'id = ?', whereArgs: [id]);
   }
 
   Future<int> update(Block aBlock) async {
     if (!dbIsOpen) open();
 
+    notifyListeners();
     return await db.update(tableName, aBlock.toMap(),
         where: 'id = ?', whereArgs: [aBlock.id]);
   }
