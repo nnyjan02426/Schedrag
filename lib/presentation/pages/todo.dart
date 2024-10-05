@@ -12,7 +12,7 @@ class TodoPage extends StatefulWidget {
 class _TodoPageState extends State<TodoPage> {
   final TimeBlocksDb db = TimeBlocksDb();
   late Future<List<TimeBlock>?> dbList;
-  int num = 0;
+  var num = 0;
 
   @override
   void initState() {

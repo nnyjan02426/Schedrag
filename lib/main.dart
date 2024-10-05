@@ -13,11 +13,11 @@ Future main() async {
   // Change the default factory. On iOS/Android, if not using `sqlite_flutter_lib` you can forget
   // this step, it will use the sqlite version available on the system.
   databaseFactory = databaseFactoryFfi;
-  runApp(const Schedrag());
+  runApp(const MyApp());
 }
 
-class Schedrag extends StatelessWidget {
-  const Schedrag({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -56,22 +56,22 @@ class _HomePageState extends State<HomePage> {
     late Widget page;
     switch (_selectedIndex) {
       case 0:
-        page = SchedulePage(optionStyle);
+        page = const SchedulePage(optionStyle);
         if (kDebugMode) {
           print('Page [Schedule] selected');
         }
       case 1:
-        page = TodoPage(optionStyle);
+        page = const TodoPage(optionStyle);
         if (kDebugMode) {
           print('Page [Todo] selected');
         }
       case 2:
-        page = TimetablePage(optionStyle);
+        page = const TimetablePage(optionStyle);
         if (kDebugMode) {
           print('Page [Timetable] selected');
         }
       case 3:
-        page = SettingsPage(optionStyle);
+        page = const SettingsPage(optionStyle);
         if (kDebugMode) {
           print('Page [Settings] selected');
         }
