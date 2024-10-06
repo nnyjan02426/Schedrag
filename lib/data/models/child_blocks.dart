@@ -53,6 +53,7 @@ class TimeBlocksDb extends BlocksDb {
 
     List<Map<String, Object?>> table =
         await db.rawQuery('SELECT * FROM $tableName');
+    notifyListeners();
     return table.map((data) => TimeBlock().toBlock(data)).toList();
   }
 }

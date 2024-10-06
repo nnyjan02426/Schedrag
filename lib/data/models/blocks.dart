@@ -43,6 +43,7 @@ abstract class BlocksDb extends ChangeNotifier {
         await db.execute('''CREATE TABLE $tableName ($executeSQL)''');
       },
     );
+    notifyListeners();
     return null;
   }
 
@@ -57,16 +58,18 @@ abstract class BlocksDb extends ChangeNotifier {
   Future<int> delete(int id) async {
     if (!dbIsOpen) open();
 
+    var idx = await db.delete(tableName, where: 'id = ?', whereArgs: [id]);
     notifyListeners();
-    return await db.delete(tableName, where: 'id = ?', whereArgs: [id]);
+    return idx;
   }
 
   Future<int> update(Block aBlock) async {
     if (!dbIsOpen) open();
 
-    notifyListeners();
-    return await db.update(tableName, aBlock.toMap(),
+    var idx = await db.update(tableName, aBlock.toMap(),
         where: 'id = ?', whereArgs: [aBlock.id]);
+    notifyListeners();
+    return idx;
   }
 
   Future close() async {
