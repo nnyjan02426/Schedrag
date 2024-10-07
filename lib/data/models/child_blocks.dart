@@ -5,10 +5,17 @@ class TimeBlock extends Block {
    * 1. estimated/spend time
    * 2. deadline
    * */
+  DateTime estimatedTime = DateTime.now(), deadline = DateTime.now();
 
   TimeBlock();
   TimeBlock.name(super.name) : super.name();
-  TimeBlock.detail({super.name, super.category, super.notes, super.id})
+  TimeBlock.detail(
+      {super.name,
+      super.category,
+      super.notes,
+      super.id,
+      required this.estimatedTime,
+      required this.deadline})
       : super.detail();
 
   @override
@@ -17,17 +24,23 @@ class TimeBlock extends Block {
       'id': id,
       'name': name,
       'category': category,
-      //'estimatedTime': estimatedTime,
-      //'deadline': deadline,
+      'estimatedTime': estimatedTime,
+      'deadline': deadline,
       'notes': notes,
     };
   }
+
+  DateTime setTime(
+          {int month = 0, int day = 0, int hour = 0, int minute = 0}) =>
+      DateTime(2000, month, day, hour, minute);
 
   @override
   TimeBlock toBlock(Map<String, Object?> data) {
     return TimeBlock.detail(
       name: data['name'].toString(),
       category: data['category'].toString(),
+      estimatedTime: DateTime.parse(data['estimatedTime'].toString()),
+      deadline: DateTime.parse(data['deadline'].toString()),
       notes: data['notes'].toString(),
       id: int.tryParse(data['id'].toString()),
     );
@@ -51,9 +64,9 @@ class TimeBlocksDb extends BlocksDb {
   Future<List<TimeBlock>?> getAll() async {
     if (!dbIsOpen) open();
 
-    List<Map<String, Object?>> table =
-        await db.rawQuery('SELECT * FROM $tableName');
+    var table = await db.rawQuery('SELECT * FROM $tableName');
+    var res = table.map((data) => TimeBlock().toBlock(data)).toList();
     notifyListeners();
-    return table.map((data) => TimeBlock().toBlock(data)).toList();
+    return res;
   }
 }
