@@ -24,8 +24,8 @@ class TimeBlock extends Block {
       'id': id,
       'name': name,
       'category': category,
-      'estimatedTime': estimatedTime,
-      'deadline': deadline,
+      'estimatedTime': estimatedTime.toIso8601String(),
+      'deadline': deadline.toIso8601String(),
       'notes': notes,
     };
   }
