@@ -46,7 +46,7 @@ class _TodoPageState extends State<TodoPage> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AddDataPage(db: timeblocksdb),
+                    builder: (context) => EntryForm(db: timeblocksdb),
                   ));
             },
             child: const Icon(Icons.add),

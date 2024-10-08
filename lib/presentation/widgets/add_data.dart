@@ -1,21 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:schedrag/data/models/child_blocks.dart';
 
-class AddDataPage extends StatelessWidget {
-  final TimeBlocksDb? db;
-  const AddDataPage({super.key, required this.db});
-
-  @override
-  Widget build(context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Add New Entry"),
-      ),
-      body: EntryForm(db: db),
-    );
-  }
-}
-
 class EntryForm extends StatefulWidget {
   final TimeBlocksDb? db;
   const EntryForm({super.key, required this.db});
@@ -43,7 +28,11 @@ class _EntryFormState extends State<EntryForm> {
 
   @override
   Widget build(context) {
-    return Form(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Add New Entry"),
+      ),
+      body: Form(
         key: _formKey,
         child: Column(
           children: [
@@ -74,19 +63,21 @@ class _EntryFormState extends State<EntryForm> {
               ),
               controller: _notesController,
             ),
-            ElevatedButton(
-              onPressed: () {
-                if (db != null && _formKey.currentState!.validate()) {
-                  db?.insert(TimeBlock.detail(
-                      name: _nameController.text,
-                      category: _categoryController.text,
-                      notes: _notesController.text));
-                  Navigator.pop(context);
-                }
-              },
-              child: const Text('Save'),
-            ),
           ],
-        ));
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          if (db != null && _formKey.currentState!.validate()) {
+            db?.insert(TimeBlock.detail(
+                name: _nameController.text,
+                category: _categoryController.text,
+                notes: _notesController.text));
+            Navigator.pop(context);
+          }
+        },
+        child: const Icon(Icons.add),
+      ),
+    );
   }
 }
