@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:schedrag/data/models/child_blocks.dart';
 
+enum Tags { name, category, notes }
+
 class EntryForm extends StatefulWidget {
   final TimeBlocksDb? db;
   const EntryForm({super.key, required this.db});
@@ -10,19 +12,21 @@ class EntryForm extends StatefulWidget {
 }
 
 class _EntryFormState extends State<EntryForm> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _categoryController = TextEditingController();
-  final _notesController = TextEditingController();
-
   final TimeBlocksDb? db;
+  final _formKey = GlobalKey<FormState>();
+  List<TextEditingController> controllers = [
+    TextEditingController(),
+    TextEditingController(),
+    TextEditingController()
+  ];
+
   _EntryFormState(this.db);
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _categoryController.dispose();
-    _notesController.dispose();
+    for (var controller in controllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -46,22 +50,22 @@ class _EntryFormState extends State<EntryForm> {
                     ? "new block must have a name"
                     : null;
               },
-              controller: _nameController,
-              autovalidateMode: AutovalidateMode.always,
+              controller: controllers[Tags.name.index],
+              autovalidateMode: AutovalidateMode.onUnfocus,
             ),
             TextFormField(
               decoration: const InputDecoration(
                 icon: Icon(Icons.category_rounded),
                 labelText: "Category",
               ),
-              controller: _categoryController,
+              controller: controllers[Tags.category.index],
             ),
             TextFormField(
               decoration: const InputDecoration(
                 icon: Icon(Icons.sticky_note_2_rounded),
                 labelText: "Notes",
               ),
-              controller: _notesController,
+              controller: controllers[Tags.notes.index],
             ),
           ],
         ),
@@ -70,9 +74,9 @@ class _EntryFormState extends State<EntryForm> {
         onPressed: () {
           if (db != null && _formKey.currentState!.validate()) {
             db?.insert(TimeBlock.detail(
-                name: _nameController.text,
-                category: _categoryController.text,
-                notes: _notesController.text));
+                name: controllers[0].text,
+                category: controllers[1].text,
+                notes: controllers[2].text));
             Navigator.pop(context);
           }
         },
