@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:schedrag/presentation/presentation.dart';
-import 'package:provider/provider.dart';
 import 'dart:io' show Platform;
 
 Future main() async {
@@ -89,9 +88,9 @@ class _HomePageState extends State<HomePage> {
         onTap: _onItemTapped,
 
         // colors
-        backgroundColor: Theme.of(context).colorScheme.onSurface,
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor: Theme.of(context).colorScheme.secondary,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        selectedItemColor: Theme.of(context).colorScheme.onPrimaryContainer,
+        unselectedItemColor: Theme.of(context).colorScheme.onSecondaryContainer,
 
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

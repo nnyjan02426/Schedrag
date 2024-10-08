@@ -10,10 +10,13 @@ abstract class Block {
 
   Block();
   Block.name(this.name);
-  Block.detail({this.name, this.category, this.notes, this.id});
+  Block.detail({this.name, this.category, this.notes});
 
   Map<String, Object?> toMap();
   Block toBlock(Map<String, Object?> data);
+  void setID(int id) {
+    this.id = id;
+  }
 }
 
 abstract class BlocksDb extends ChangeNotifier {

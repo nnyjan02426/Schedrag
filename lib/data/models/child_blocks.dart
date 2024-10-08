@@ -8,8 +8,8 @@ class TimeBlock extends Block {
 
   TimeBlock();
   TimeBlock.name(super.name) : super.name();
-  TimeBlock.detail({super.name, super.category, super.notes, super.id})
-      : super.detail();
+  TimeBlock.detail({super.name, super.category, super.notes}) : super.detail();
+  //: super.detail(name: name, category: category, notes: notes);
 
   @override
   Map<String, Object?> toMap() {
@@ -29,7 +29,7 @@ class TimeBlock extends Block {
       name: data['name'].toString(),
       category: data['category'].toString(),
       notes: data['notes'].toString(),
-      id: int.tryParse(data['id'].toString()),
+      //id: int.tryParse(data['id'].toString()),
     );
   }
 }
