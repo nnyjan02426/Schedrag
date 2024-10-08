@@ -42,7 +42,7 @@ class TimeBlock extends Block {
       estimatedTime: DateTime.parse(data['estimatedTime'].toString()),
       deadline: DateTime.parse(data['deadline'].toString()),
       notes: data['notes'].toString(),
-      id: int.tryParse(data['id'].toString()),
+      //id: int.tryParse(data['id'].toString()),
     );
   }
 }

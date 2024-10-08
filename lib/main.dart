@@ -88,9 +88,9 @@ class _HomePageState extends State<HomePage> {
         onTap: _onItemTapped,
 
         // colors
-        backgroundColor: Theme.of(context).colorScheme.onSurface,
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor: Theme.of(context).colorScheme.secondary,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        selectedItemColor: Theme.of(context).colorScheme.onPrimaryContainer,
+        unselectedItemColor: Theme.of(context).colorScheme.onSecondaryContainer,
 
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:schedrag/data/models/child_blocks.dart';
+import 'package:schedrag/presentation/widgets/add_data.dart';
 
 class TodoPage extends StatefulWidget {
   final TextStyle optionStyle;
@@ -41,9 +42,12 @@ class _TodoPageState extends State<TodoPage> {
           floatingActionButton: FloatingActionButton(
             // add new timeblock
             onPressed: () {
-              timeblocksdb.insert(TimeBlock.name('name_$num'));
-              print('name_$num\n');
-              num++;
+              //timeblocksdb.insert(TimeBlock.name('name_$num'));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddDataPage(db: timeblocksdb),
+                  ));
             },
             child: const Icon(Icons.add),
           ),
