@@ -74,9 +74,9 @@ class _EntryFormState extends State<EntryForm> {
         onPressed: () {
           if (db != null && _formKey.currentState!.validate()) {
             db?.insert(TimeBlock.detail(
-                name: controllers[0].text,
-                category: controllers[1].text,
-                notes: controllers[2].text));
+                name: controllers[Tags.name.index].text,
+                category: controllers[Tags.category.index].text,
+                notes: controllers[Tags.notes.index].text));
             Navigator.pop(context);
           }
         },
