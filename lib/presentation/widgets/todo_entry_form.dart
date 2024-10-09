@@ -76,6 +76,8 @@ class _EntryFormState extends State<EntryForm> {
             db?.insert(TimeBlock.detail(
                 name: controllers[Tags.name.index].text,
                 category: controllers[Tags.category.index].text,
+                //estimatedTime: DateTime.now(),
+                //deadline: DateTime.now(),
                 notes: controllers[Tags.notes.index].text));
             Navigator.pop(context);
           }

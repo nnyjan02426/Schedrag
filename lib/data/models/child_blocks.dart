@@ -1,18 +1,21 @@
 import 'package:schedrag/data/models/blocks.dart';
 
 class TimeBlock extends Block {
-  /* TODO: add time variables
-   * 1. estimated/spend time
-   * 2. deadline
-   * */
-  //DateTime estimatedTime = DateTime.now(), deadline = DateTime.now();
+  DateTime estimatedTime, deadline;
 
-  TimeBlock();
-  TimeBlock.name(super.name) : super.name();
+  TimeBlock()
+      : estimatedTime = DateTime.now(),
+        deadline = DateTime.now();
+  TimeBlock.name(super.name)
+      : estimatedTime = DateTime.now(),
+        deadline = DateTime.now(),
+        super.name();
   TimeBlock.detail({super.name, super.category, super.notes})
       //required this.estimatedTime,
       //required this.deadline})
-      : super.detail();
+      : estimatedTime = DateTime.now(),
+        deadline = DateTime.now(),
+        super.detail();
 
   @override
   Map<String, Object?> toMap() {
@@ -20,8 +23,8 @@ class TimeBlock extends Block {
       'id': id,
       'name': name,
       'category': category,
-      //'estimatedTime': estimatedTime.toIso8601String(),
-      //'deadline': deadline.toIso8601String(),
+      'estimatedTime': estimatedTime.toIso8601String(),
+      'deadline': deadline.toIso8601String(),
       'notes': notes,
     };
   }
@@ -59,9 +62,9 @@ class TimeBlocksDb extends BlocksDb {
   Future<List<TimeBlock>?> getAll() async {
     if (!dbIsOpen) open();
 
-    var table = await db.rawQuery('SELECT * FROM $tableName');
-    var res = table.map((data) => TimeBlock().toBlock(data)).toList();
+    List<Map<String, Object?>> table =
+        await db.rawQuery('SELECT * FROM $tableName');
     notifyListeners();
-    return res;
+    return table.map((data) => TimeBlock().toBlock(data)).toList();
   }
 }
