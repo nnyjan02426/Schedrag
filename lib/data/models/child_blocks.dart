@@ -5,17 +5,13 @@ class TimeBlock extends Block {
    * 1. estimated/spend time
    * 2. deadline
    * */
-  DateTime estimatedTime = DateTime.now(), deadline = DateTime.now();
+  //DateTime estimatedTime = DateTime.now(), deadline = DateTime.now();
 
   TimeBlock();
   TimeBlock.name(super.name) : super.name();
-  TimeBlock.detail(
-      {super.name,
-      super.category,
-      super.notes,
-      super.id,
-      required this.estimatedTime,
-      required this.deadline})
+  TimeBlock.detail({super.name, super.category, super.notes})
+      //required this.estimatedTime,
+      //required this.deadline})
       : super.detail();
 
   @override
@@ -24,8 +20,8 @@ class TimeBlock extends Block {
       'id': id,
       'name': name,
       'category': category,
-      'estimatedTime': estimatedTime.toIso8601String(),
-      'deadline': deadline.toIso8601String(),
+      //'estimatedTime': estimatedTime.toIso8601String(),
+      //'deadline': deadline.toIso8601String(),
       'notes': notes,
     };
   }
@@ -39,10 +35,9 @@ class TimeBlock extends Block {
     return TimeBlock.detail(
       name: data['name'].toString(),
       category: data['category'].toString(),
-      estimatedTime: DateTime.parse(data['estimatedTime'].toString()),
-      deadline: DateTime.parse(data['deadline'].toString()),
+      //estimatedTime: DateTime.parse(data['estimatedTime'].toString()),
+      //deadline: DateTime.parse(data['deadline'].toString()),
       notes: data['notes'].toString(),
-      //id: int.tryParse(data['id'].toString()),
     );
   }
 }
