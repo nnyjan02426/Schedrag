@@ -18,8 +18,16 @@ class TimeBlock extends Block {
       DateTime? estimatedTime,
       DateTime? deadline})
       : super.detail() {
-    if (estimatedTime == null) this.estimatedTime = DateTime.now();
-    if (deadline == null) this.deadline = DateTime.now();
+    if (estimatedTime == null) {
+      this.estimatedTime = DateTime.now();
+    } else {
+      this.estimatedTime = estimatedTime;
+    }
+    if (deadline == null) {
+      this.deadline = DateTime.now();
+    } else {
+      this.deadline = deadline;
+    }
   }
 
   @override
