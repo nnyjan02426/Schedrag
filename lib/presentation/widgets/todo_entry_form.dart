@@ -1,20 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:schedrag/data/models/child_blocks.dart';
 
-class AddDataPage extends StatelessWidget {
-  final TimeBlocksDb? db;
-  const AddDataPage({super.key, required this.db});
-
-  @override
-  Widget build(context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Add New Entry"),
-      ),
-      body: EntryForm(db: db),
-    );
-  }
-}
+enum Tags { name, category, notes }
 
 class EntryForm extends StatefulWidget {
   final TimeBlocksDb? db;
@@ -25,25 +12,31 @@ class EntryForm extends StatefulWidget {
 }
 
 class _EntryFormState extends State<EntryForm> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _categoryController = TextEditingController();
-  final _notesController = TextEditingController();
-
   final TimeBlocksDb? db;
+  final _formKey = GlobalKey<FormState>();
+  List<TextEditingController> controllers = [
+    TextEditingController(),
+    TextEditingController(),
+    TextEditingController()
+  ];
+
   _EntryFormState(this.db);
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _categoryController.dispose();
-    _notesController.dispose();
+    for (var controller in controllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
   @override
   Widget build(context) {
-    return Form(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Add New Entry"),
+      ),
+      body: Form(
         key: _formKey,
         child: Column(
           children: [
@@ -57,36 +50,38 @@ class _EntryFormState extends State<EntryForm> {
                     ? "new block must have a name"
                     : null;
               },
-              controller: _nameController,
-              autovalidateMode: AutovalidateMode.always,
+              controller: controllers[Tags.name.index],
+              autovalidateMode: AutovalidateMode.onUnfocus,
             ),
             TextFormField(
               decoration: const InputDecoration(
                 icon: Icon(Icons.category_rounded),
                 labelText: "Category",
               ),
-              controller: _categoryController,
+              controller: controllers[Tags.category.index],
             ),
             TextFormField(
               decoration: const InputDecoration(
                 icon: Icon(Icons.sticky_note_2_rounded),
                 labelText: "Notes",
               ),
-              controller: _notesController,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (db != null && _formKey.currentState!.validate()) {
-                  db?.insert(TimeBlock.detail(
-                      name: _nameController.text,
-                      category: _categoryController.text,
-                      notes: _notesController.text));
-                  Navigator.pop(context);
-                }
-              },
-              child: const Text('Save'),
+              controller: controllers[Tags.notes.index],
             ),
           ],
-        ));
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          if (db != null && _formKey.currentState!.validate()) {
+            db?.insert(TimeBlock.detail(
+                name: controllers[Tags.name.index].text,
+                category: controllers[Tags.category.index].text,
+                notes: controllers[Tags.notes.index].text));
+            Navigator.pop(context);
+          }
+        },
+        child: const Icon(Icons.add),
+      ),
+    );
   }
 }
