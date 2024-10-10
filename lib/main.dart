@@ -1,17 +1,24 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:schedrag/presentation/presentation.dart';
 import 'dart:io' show Platform;
 
+import 'package:intl/intl_standalone.dart'
+    if (dart.library.html) 'package:intl/intl_browser.dart';
+
 Future main() async {
+  // database ffi settings
   if (Platform.isWindows || Platform.isLinux) {
-    // Initialize FFI
     sqfliteFfiInit();
   }
-  // Change the default factory. On iOS/Android, if not using `sqlite_flutter_lib` you can forget
-  // this step, it will use the sqlite version available on the system.
   databaseFactory = databaseFactoryFfi;
+
+  // init time
+  WidgetsFlutterBinding.ensureInitialized();
+  await findSystemLocale();
+
   runApp(const MyApp());
 }
 
@@ -65,7 +72,7 @@ class _HomePageState extends State<HomePage> {
           print('Page [Todo] selected');
         }
       case 2:
-        page = const TimetablePage(optionStyle);
+        page = const TimetablePage();
         if (kDebugMode) {
           print('Page [Timetable] selected');
         }

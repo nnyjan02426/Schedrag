@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:schedrag/data/models/child_blocks.dart';
+import 'package:date_field/date_field.dart';
 
 enum Tags { name, category, notes }
 
@@ -13,12 +14,12 @@ class EntryForm extends StatefulWidget {
 
 class _EntryFormState extends State<EntryForm> {
   final TimeBlocksDb? db;
+
   final _formKey = GlobalKey<FormState>();
-  List<TextEditingController> controllers = [
-    TextEditingController(),
-    TextEditingController(),
-    TextEditingController()
-  ];
+  final List<TextEditingController> controllers =
+      List<TextEditingController>.generate(
+          3, (int index) => TextEditingController());
+  List<DateTime?> times = List<DateTime?>.filled(2, null);
 
   _EntryFormState(this.db);
 
@@ -67,6 +68,20 @@ class _EntryFormState extends State<EntryForm> {
               ),
               controller: controllers[Tags.notes.index],
             ),
+            DateTimeFormField(
+              decoration: const InputDecoration(
+                icon: Icon(Icons.timer_outlined),
+                labelText: "estimatedTime",
+              ),
+              onChanged: (value) => setState(() => times[0] = value),
+            ),
+            DateTimeFormField(
+              decoration: const InputDecoration(
+                icon: Icon(Icons.calendar_month_rounded),
+                labelText: "deadline",
+              ),
+              onChanged: (value) => setState(() => times[1] = value),
+            )
           ],
         ),
       ),
@@ -76,8 +91,8 @@ class _EntryFormState extends State<EntryForm> {
             db?.insert(TimeBlock.detail(
                 name: controllers[Tags.name.index].text,
                 category: controllers[Tags.category.index].text,
-                //estimatedTime: DateTime.now(),
-                //deadline: DateTime.now(),
+                estimatedTime: times[0],
+                deadline: times[1],
                 notes: controllers[Tags.notes.index].text));
             Navigator.pop(context);
           }
