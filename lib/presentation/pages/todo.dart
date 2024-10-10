@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:schedrag/data/models/child_blocks.dart';
 import 'package:schedrag/presentation/widgets/todo_entry_form.dart';
@@ -30,7 +32,12 @@ class _TodoPageState extends State<TodoPage> {
                   itemBuilder: (context, index) {
                     return ListTile(
                         title: Text(snap.data![index].name.toString()),
-                        onTap: () {});
+                        onTap: () {
+                          if (kDebugMode) {
+                            print(join(
+                                "[name]: ", snap.data![index].name.toString()));
+                          }
+                        });
                   },
                 );
               } else {

@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
           print('Page [Todo] selected');
         }
       case 2:
-        page = const TimetablePage(optionStyle);
+        page = const TimetablePage();
         if (kDebugMode) {
           print('Page [Timetable] selected');
         }
