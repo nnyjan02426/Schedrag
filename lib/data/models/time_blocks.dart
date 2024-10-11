@@ -1,32 +1,32 @@
 import 'package:schedrag/data/models/blocks.dart';
 
 class TimeBlock extends Block {
-  late DateTime estimatedTime, deadline;
+  late DateTime startTime, endTime;
 
   TimeBlock()
-      : estimatedTime = DateTime.now(),
-        deadline = DateTime.now();
+      : startTime = DateTime.now(),
+        endTime = DateTime.now();
   TimeBlock.name(super.name)
-      : estimatedTime = DateTime.now(),
-        deadline = DateTime.now(),
+      : startTime = DateTime.now(),
+        endTime = DateTime.now(),
         super.name();
 
   TimeBlock.detail(
       {super.name,
       super.category,
       super.notes,
-      DateTime? estimatedTime,
-      DateTime? deadline})
+      DateTime? startTime,
+      DateTime? endTime})
       : super.detail() {
-    if (estimatedTime == null) {
-      this.estimatedTime = DateTime.now();
+    if (startTime == null) {
+      this.startTime = DateTime.now();
     } else {
-      this.estimatedTime = estimatedTime;
+      this.startTime = startTime;
     }
-    if (deadline == null) {
-      this.deadline = DateTime.now();
+    if (endTime == null) {
+      this.endTime = DateTime.now();
     } else {
-      this.deadline = deadline;
+      this.endTime = endTime;
     }
   }
 
@@ -36,8 +36,8 @@ class TimeBlock extends Block {
       'id': id,
       'name': name,
       'category': category,
-      'estimatedTime': estimatedTime.toString(),
-      'deadline': deadline.toString(),
+      'estimatedTime': startTime.toString(),
+      'deadline': endTime.toString(),
       'notes': notes,
     };
   }
@@ -51,8 +51,8 @@ class TimeBlock extends Block {
     return TimeBlock.detail(
       name: data['name'].toString(),
       category: data['category'].toString(),
-      estimatedTime: DateTime.tryParse(data['estimatedTime'].toString()),
-      deadline: DateTime.tryParse(data['deadline'].toString()),
+      startTime: DateTime.tryParse(data['startTime'].toString()),
+      endTime: DateTime.tryParse(data['endTime'].toString()),
       notes: data['notes'].toString(),
     );
   }
@@ -62,14 +62,14 @@ class TimeBlocksDb extends BlocksDb {
   static const String _executeSQL = '''
     id INTEGER PRIMARY KEY,
     name TEXT, category TEXT,
-    estimatedTime DATETIME,
-    deadline DATETIME,
+    startTime DATETIME,
+    endTime DATETIME,
     notes TEXT''';
 
   TimeBlocksDb()
       : super(
             dbFilename: 'timeBlock.db',
-            tableName: 'Todos',
+            tableName: 'Timetable',
             executeSQL: _executeSQL);
 
   Future<List<TimeBlock>?> getAll() async {

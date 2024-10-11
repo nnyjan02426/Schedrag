@@ -2,7 +2,7 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:schedrag/data/models/child_blocks.dart';
+import 'package:schedrag/data/models/time_blocks.dart';
 
 class TimetablePage extends StatefulWidget {
   const TimetablePage({super.key});
