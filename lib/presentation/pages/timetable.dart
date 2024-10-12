@@ -1,5 +1,5 @@
 import 'dart:io' show Platform;
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:schedrag/data/models/time_blocks.dart';
@@ -26,8 +26,8 @@ class _TimetablePageState extends State<TimetablePage> {
     CustomMultiDayConfiguration(
       name: 'Day',
       numberOfDays: 1,
-      startHour: 6,
-      endHour: 18,
+      startHour: 3,
+      endHour: 23,
     ),
     CustomMultiDayConfiguration(
       name: 'Custom',
@@ -39,35 +39,60 @@ class _TimetablePageState extends State<TimetablePage> {
     ScheduleConfiguration(),
   ];
 
+  TimeBlocksDb? db;
+
   @override
   void initState() {
     super.initState();
     // add new event
-    //DateTime now = DateTime.now();
-    //eventController.addEvents([
-    //  CalendarEvent(
-    //    dateTimeRange: DateTimeRange(
-    //      start: now,
-    //      end: now.add(const Duration(hours: 1)),
-    //    ),
-    //    eventData: TimeBlock.name('Event 1'),
-    //  ),
-    //  CalendarEvent(
-    //    dateTimeRange: DateTimeRange(
-    //      start: now.add(const Duration(hours: 2)),
-    //      end: now.add(const Duration(hours: 5)),
-    //    ),
-    //    eventData: TimeBlock.name('Event 2'),
-    //  ),
-    //  CalendarEvent(
-    //    dateTimeRange: DateTimeRange(
-    //      start: DateTime(now.year, now.month, now.day),
-    //      end: DateTime(now.year, now.month, now.day)
-    //          .add(const Duration(days: 2)),
-    //    ),
-    //    eventData: TimeBlock.name('Event 3'),
-    //  ),
-    //]);
+    db = TimeBlocksDb();
+    loadInitialEvents();
+    //db?.getAll().then((List<TimeBlock>? timeblocksdb) {
+    //  if (timeblocksdb != null) {
+    //    for (TimeBlock block in timeblocksdb) {
+    //      eventController.addEvent(CalendarEvent(
+    //        dateTimeRange:
+    //            DateTimeRange(start: block.startTime, end: block.endTime),
+    //        eventData: block,
+    //      ));
+    //    }
+    //  }
+    //});
+  }
+
+  Future<void> loadInitialEvents() async {
+    // Debugging to check if db is initialized and fetches data correctly
+    if (db == null) {
+      if (kDebugMode) {
+        print("Database is not initialized");
+      }
+      return;
+    }
+
+    List<TimeBlock>? timeblocksdb = await db?.getAll();
+
+    if (timeblocksdb != null && timeblocksdb.isNotEmpty) {
+      if (kDebugMode) {
+        print('Fetched ${timeblocksdb.length} events from the database');
+      }
+
+      // Add the fetched events from the database to the event controller
+      for (TimeBlock block in timeblocksdb) {
+        if (kDebugMode) {
+          print('Adding event: ${block.name}');
+        }
+        eventController.addEvent(CalendarEvent(
+          dateTimeRange:
+              DateTimeRange(start: block.startTime, end: block.endTime),
+          eventData: block,
+        ));
+      }
+    } else if (kDebugMode) {
+      print('No events found in the database');
+    }
+
+    // Notify the calendar to update after events are added
+    setState(() {});
   }
 
   @override
@@ -89,7 +114,6 @@ class _TimetablePageState extends State<TimetablePage> {
         onEventCreated: _onEventCreated,
       ),
     );
-
     return SafeArea(
       child: Scaffold(
         body: calendar,
@@ -98,9 +122,16 @@ class _TimetablePageState extends State<TimetablePage> {
   }
 
   CalendarEvent<TimeBlock> _onCreateEvent(DateTimeRange dateTimeRange) {
+    TimeBlock newBlock = TimeBlock.detail(
+        name: 'new event',
+        category: null,
+        notes: null,
+        startTime: dateTimeRange.start,
+        endTime: dateTimeRange.end);
+    db?.insert(newBlock);
     return CalendarEvent(
       dateTimeRange: dateTimeRange,
-      eventData: TimeBlock.name('New Event'),
+      eventData: newBlock,
     );
   }
 

@@ -21,8 +21,8 @@ class _TodoPageState extends State<TodoPage> {
   Widget build(context) {
     return ChangeNotifierProvider(
       create: (context) => TodoBlocksDb(),
-      child: Consumer<TodoBlocksDb>(builder: (context, timeblocksdb, child) {
-        dbList = timeblocksdb.getAll();
+      child: Consumer<TodoBlocksDb>(builder: (context, todoblocksdb, child) {
+        dbList = todoblocksdb.getAll();
         return Scaffold(
           body: FutureBuilder<List<TodoBlock>?>(
             builder: (con, snap) {
@@ -52,7 +52,7 @@ class _TodoPageState extends State<TodoPage> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => EntryForm(db: timeblocksdb),
+                    builder: (context) => EntryForm(db: todoblocksdb),
                   ));
             },
             child: const Icon(Icons.add),

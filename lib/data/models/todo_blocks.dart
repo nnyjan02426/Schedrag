@@ -68,16 +68,16 @@ class TodoBlocksDb extends BlocksDb {
 
   TodoBlocksDb()
       : super(
-            dbFilename: 'timeBlock.db',
+            dbFilename: 'TodoBlock.db',
             tableName: 'Todos',
             executeSQL: _executeSQL);
 
   Future<List<TodoBlock>?> getAll() async {
     if (!dbIsOpen) open();
 
-    List<Map<String, Object?>> table =
-        await db.rawQuery('SELECT * FROM $tableName');
+    List<Map<String, Object?>>? table =
+        await db?.rawQuery('SELECT * FROM $tableName');
     notifyListeners();
-    return table.map((data) => TodoBlock().toBlock(data)).toList();
+    return table?.map((data) => TodoBlock().toBlock(data)).toList();
   }
 }

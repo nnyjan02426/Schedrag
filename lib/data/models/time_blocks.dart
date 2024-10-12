@@ -36,8 +36,8 @@ class TimeBlock extends Block {
       'id': id,
       'name': name,
       'category': category,
-      'estimatedTime': startTime.toString(),
-      'deadline': endTime.toString(),
+      'startTime': startTime.toString(),
+      'endTime': endTime.toString(),
       'notes': notes,
     };
   }
@@ -68,16 +68,16 @@ class TimeBlocksDb extends BlocksDb {
 
   TimeBlocksDb()
       : super(
-            dbFilename: 'timeBlock.db',
+            dbFilename: 'TimeBlock.db',
             tableName: 'Timetable',
             executeSQL: _executeSQL);
 
   Future<List<TimeBlock>?> getAll() async {
     if (!dbIsOpen) open();
 
-    List<Map<String, Object?>> table =
-        await db.rawQuery('SELECT * FROM $tableName');
+    List<Map<String, Object?>>? table =
+        await db?.rawQuery('SELECT * FROM $tableName');
     notifyListeners();
-    return table.map((data) => TimeBlock().toBlock(data)).toList();
+    return table?.map((data) => TimeBlock().toBlock(data)).toList();
   }
 }
