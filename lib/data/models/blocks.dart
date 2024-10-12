@@ -57,7 +57,7 @@ abstract class BlocksDb extends ChangeNotifier {
   }
 
   Future<Block> insert(Block block) async {
-    if (!dbIsOpen) open();
+    if (!dbIsOpen) await open();
 
     block.id = await db?.insert(tableName, block.toMap());
     if (kDebugMode) {
@@ -67,21 +67,19 @@ abstract class BlocksDb extends ChangeNotifier {
     return block;
   }
 
-  Future<int?> delete(int id) async {
-    if (!dbIsOpen) open();
+  Future<void> delete(int id) async {
+    if (!dbIsOpen) await open();
 
-    var idx = await db?.delete(tableName, where: 'id = ?', whereArgs: [id]);
+    await db?.delete(tableName, where: 'id = ?', whereArgs: [id]);
     notifyListeners();
-    return idx;
   }
 
-  Future<int?> update(Block aBlock) async {
-    if (!dbIsOpen) open();
+  Future<void> update(Block block) async {
+    if (!dbIsOpen) await open();
 
-    var idx = await db?.update(tableName, aBlock.toMap(),
-        where: 'id = ?', whereArgs: [aBlock.id]);
+    await db?.update(tableName, block.toMap(),
+        where: 'id = ?', whereArgs: [block.id]);
     notifyListeners();
-    return idx;
   }
 
   Future close() async {

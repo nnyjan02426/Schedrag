@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:schedrag/data/models/blocks.dart';
 
 class TimeBlock extends Block {
@@ -75,33 +74,10 @@ class TimeBlocksDb extends BlocksDb {
             executeSQL: _executeSQL);
 
   Future<List<TimeBlock>?> getAll() async {
-    if (!dbIsOpen) open();
-    if (kDebugMode && !dbIsOpen) print('Database not opened');
-
-    if (kDebugMode) print('Fetching data from the database...');
-
+    if (!dbIsOpen) await open();
     List<Map<String, Object?>>? table =
         await db?.rawQuery('SELECT * FROM $tableName');
-
-    if (kDebugMode) {
-      if (table != null) {
-        print('Found ${table.length} rows in the database');
-      } else {
-        print('No rows returned from the database');
-      }
-    }
-
-    List<TimeBlock> timeblocks = table?.map((data) {
-          if (kDebugMode) print('Data from row: $data');
-          return TimeBlock().toBlock(data);
-        }).toList() ??
-        [];
-
-    return timeblocks.isNotEmpty ? timeblocks : null;
-
-    //List<Map<String, Object?>>? table =
-    //    await db?.rawQuery('SELECT * FROM $tableName');
-    //notifyListeners();
-    //return table?.map((data) => TimeBlock().toBlock(data)).toList();
+    notifyListeners();
+    return table?.map((data) => TimeBlock().toBlock(data)).toList();
   }
 }

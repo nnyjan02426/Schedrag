@@ -44,36 +44,25 @@ class _TimetablePageState extends State<TimetablePage> {
   @override
   void initState() {
     super.initState();
-    loadInitialEvents();
-  }
 
-  Future<void> loadInitialEvents() async {
+    // load events from database
     db = TimeBlocksDb();
-    await db?.open();
-
-    List<TimeBlock>? timeblocksdb = await db?.getAll();
-    if (timeblocksdb != null && timeblocksdb.isNotEmpty) {
-      if (kDebugMode) {
-        print('Fetched ${timeblocksdb.length} events from the database');
-      }
-
-      // Add the fetched events from the database to the event controller
-      for (TimeBlock block in timeblocksdb) {
-        if (kDebugMode) {
-          print('Adding event: ${block.name}');
+    db?.getAll().then((List<TimeBlock>? timeblocksdb) {
+      if (timeblocksdb != null) {
+        for (TimeBlock block in timeblocksdb) {
+          eventController.addEvent(CalendarEvent(
+            dateTimeRange:
+                DateTimeRange(start: block.startTime, end: block.endTime),
+            eventData: block,
+          ));
         }
-        eventController.addEvent(CalendarEvent(
-          dateTimeRange:
-              DateTimeRange(start: block.startTime, end: block.endTime),
-          eventData: block,
-        ));
+        if (kDebugMode) {
+          print('Fetched ${timeblocksdb.length} events from the database');
+        }
+      } else if (kDebugMode) {
+        print('No events found in database');
       }
-    } else if (kDebugMode) {
-      print('No events found in the database');
-    }
-
-    // Notify the calendar to update after events are added
-    setState(() {});
+    });
   }
 
   @override
@@ -137,6 +126,9 @@ class _TimetablePageState extends State<TimetablePage> {
     if (isMobile) {
       eventController.deselectEvent();
     }
+
+    event.eventData!.setTimes(event.start, event.end);
+    db?.update(event.eventData!);
   }
 
   Widget _tileBuilder(

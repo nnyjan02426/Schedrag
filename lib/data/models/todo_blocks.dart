@@ -69,7 +69,7 @@ class TodoBlocksDb extends BlocksDb {
             executeSQL: _executeSQL);
 
   Future<List<TodoBlock>?> getAll() async {
-    if (!dbIsOpen) open();
+    if (!dbIsOpen) await open();
 
     List<Map<String, Object?>>? table =
         await db?.rawQuery('SELECT * FROM $tableName');
