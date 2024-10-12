@@ -31,6 +31,10 @@ abstract class BlocksDb extends ChangeNotifier {
       required this.executeSQL})
       : dbIsOpen = false;
 
+  DateTime setTime(
+          {int month = 0, int day = 0, int hour = 0, int minute = 0}) =>
+      DateTime(2000, month, day, hour, minute);
+
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:schedrag/data/models/blocks.dart';
 
 class TimeBlock extends Block {
@@ -30,6 +31,11 @@ class TimeBlock extends Block {
     }
   }
 
+  void setTimes(DateTime? start, DateTime? end) {
+    if (start != null) startTime = start;
+    if (end != null) endTime = end;
+  }
+
   @override
   Map<String, Object?> toMap() {
     return {
@@ -41,10 +47,6 @@ class TimeBlock extends Block {
       'notes': notes,
     };
   }
-
-  DateTime setTime(
-          {int month = 0, int day = 0, int hour = 0, int minute = 0}) =>
-      DateTime(2000, month, day, hour, minute);
 
   @override
   TimeBlock toBlock(Map<String, Object?> data) {
@@ -74,10 +76,32 @@ class TimeBlocksDb extends BlocksDb {
 
   Future<List<TimeBlock>?> getAll() async {
     if (!dbIsOpen) open();
+    if (kDebugMode && !dbIsOpen) print('Database not opened');
+
+    if (kDebugMode) print('Fetching data from the database...');
 
     List<Map<String, Object?>>? table =
         await db?.rawQuery('SELECT * FROM $tableName');
-    notifyListeners();
-    return table?.map((data) => TimeBlock().toBlock(data)).toList();
+
+    if (kDebugMode) {
+      if (table != null) {
+        print('Found ${table.length} rows in the database');
+      } else {
+        print('No rows returned from the database');
+      }
+    }
+
+    List<TimeBlock> timeblocks = table?.map((data) {
+          if (kDebugMode) print('Data from row: $data');
+          return TimeBlock().toBlock(data);
+        }).toList() ??
+        [];
+
+    return timeblocks.isNotEmpty ? timeblocks : null;
+
+    //List<Map<String, Object?>>? table =
+    //    await db?.rawQuery('SELECT * FROM $tableName');
+    //notifyListeners();
+    //return table?.map((data) => TimeBlock().toBlock(data)).toList();
   }
 }

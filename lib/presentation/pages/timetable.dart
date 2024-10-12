@@ -44,33 +44,14 @@ class _TimetablePageState extends State<TimetablePage> {
   @override
   void initState() {
     super.initState();
-    // add new event
-    db = TimeBlocksDb();
     loadInitialEvents();
-    //db?.getAll().then((List<TimeBlock>? timeblocksdb) {
-    //  if (timeblocksdb != null) {
-    //    for (TimeBlock block in timeblocksdb) {
-    //      eventController.addEvent(CalendarEvent(
-    //        dateTimeRange:
-    //            DateTimeRange(start: block.startTime, end: block.endTime),
-    //        eventData: block,
-    //      ));
-    //    }
-    //  }
-    //});
   }
 
   Future<void> loadInitialEvents() async {
-    // Debugging to check if db is initialized and fetches data correctly
-    if (db == null) {
-      if (kDebugMode) {
-        print("Database is not initialized");
-      }
-      return;
-    }
+    db = TimeBlocksDb();
+    await db?.open();
 
     List<TimeBlock>? timeblocksdb = await db?.getAll();
-
     if (timeblocksdb != null && timeblocksdb.isNotEmpty) {
       if (kDebugMode) {
         print('Fetched ${timeblocksdb.length} events from the database');
@@ -114,6 +95,7 @@ class _TimetablePageState extends State<TimetablePage> {
         onEventCreated: _onEventCreated,
       ),
     );
+
     return SafeArea(
       child: Scaffold(
         body: calendar,
@@ -122,16 +104,9 @@ class _TimetablePageState extends State<TimetablePage> {
   }
 
   CalendarEvent<TimeBlock> _onCreateEvent(DateTimeRange dateTimeRange) {
-    TimeBlock newBlock = TimeBlock.detail(
-        name: 'new event',
-        category: null,
-        notes: null,
-        startTime: dateTimeRange.start,
-        endTime: dateTimeRange.end);
-    db?.insert(newBlock);
     return CalendarEvent(
       dateTimeRange: dateTimeRange,
-      eventData: newBlock,
+      eventData: TimeBlock.name('new event'),
     );
   }
 
@@ -141,6 +116,8 @@ class _TimetablePageState extends State<TimetablePage> {
 
     // Deselect the event.
     eventController.deselectEvent();
+    event.eventData!.setTimes(event.start, event.end);
+    db?.insert(event.eventData!);
   }
 
   Future<void> _onEventTapped(
