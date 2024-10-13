@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
@@ -8,10 +8,12 @@ abstract class Block {
   String? name;
   String? category, notes;
   int? id;
+  Color color;
 
-  Block();
-  Block.name(this.name);
-  Block.detail({this.name, this.category, this.notes});
+  Block() : color = Colors.white;
+  Block.name(this.name) : color = Colors.white;
+  Block.detail(
+      {this.name, this.category, this.notes, this.color = Colors.white});
 
   Map<String, Object?> toMap();
   Block toBlock(Map<String, Object?> data);
@@ -31,10 +33,6 @@ abstract class BlocksDb extends ChangeNotifier {
       required this.executeSQL})
       : dbIsOpen = false;
 
-  DateTime setTime(
-          {int month = 0, int day = 0, int hour = 0, int minute = 0}) =>
-      DateTime(2000, month, day, hour, minute);
-
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
@@ -44,7 +42,7 @@ abstract class BlocksDb extends ChangeNotifier {
     db = await openDatabase(
       join(await _localPath, dbFilename),
       //dbFilename,
-      version: 1,
+      version: 2,
       onOpen: (db) {
         dbIsOpen = true;
       },

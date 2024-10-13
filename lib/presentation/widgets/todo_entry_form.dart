@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:schedrag/data/models/todo_blocks.dart';
 import 'package:date_field/date_field.dart';
+import 'package:flex_color_picker/flex_color_picker.dart';
 
 enum Tags { name, category, notes }
 
@@ -20,6 +21,7 @@ class _EntryFormState extends State<EntryForm> {
       List<TextEditingController>.generate(
           3, (int index) => TextEditingController());
   List<DateTime?> times = List<DateTime?>.filled(2, null);
+  Color selectedColor = Colors.white;
 
   _EntryFormState(this.db);
 
@@ -81,6 +83,18 @@ class _EntryFormState extends State<EntryForm> {
                 labelText: "deadline",
               ),
               onChanged: (value) => setState(() => times[1] = value),
+            ),
+            Card(
+              elevation: 2,
+              child: ColorPicker(
+                color: selectedColor,
+                onColorChanged: (Color color) =>
+                    setState(() => selectedColor = color),
+                heading: Text("Select color",
+                    style: Theme.of(context).textTheme.headlineSmall),
+                subheading: Text("Select color shade",
+                    style: Theme.of(context).textTheme.titleSmall),
+              ),
             )
           ],
         ),
@@ -93,7 +107,8 @@ class _EntryFormState extends State<EntryForm> {
                 category: controllers[Tags.category.index].text,
                 estimatedTime: times[0],
                 deadline: times[1],
-                notes: controllers[Tags.notes.index].text));
+                notes: controllers[Tags.notes.index].text,
+                color: selectedColor));
             Navigator.pop(context);
           }
         },

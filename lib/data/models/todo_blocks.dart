@@ -1,4 +1,5 @@
 import 'package:schedrag/data/models/blocks.dart';
+import 'package:flutter/material.dart' show Color;
 
 class TodoBlock extends Block {
   late DateTime estimatedTime, deadline;
@@ -15,6 +16,7 @@ class TodoBlock extends Block {
       {super.name,
       super.category,
       super.notes,
+      super.color,
       DateTime? estimatedTime,
       DateTime? deadline})
       : super.detail() {
@@ -39,6 +41,7 @@ class TodoBlock extends Block {
       'estimatedTime': estimatedTime.toString(),
       'deadline': deadline.toString(),
       'notes': notes,
+      'color': color.value.toRadixString(16),
     };
   }
 
@@ -50,6 +53,7 @@ class TodoBlock extends Block {
       estimatedTime: DateTime.tryParse(data['estimatedTime'].toString()),
       deadline: DateTime.tryParse(data['deadline'].toString()),
       notes: data['notes'].toString(),
+      color: Color(int.parse(data['color'].toString(), radix: 16)),
     );
   }
 }
@@ -60,7 +64,8 @@ class TodoBlocksDb extends BlocksDb {
     name TEXT, category TEXT,
     estimatedTime DATETIME,
     deadline DATETIME,
-    notes TEXT''';
+    notes TEXT, color TEXT
+    ''';
 
   TodoBlocksDb()
       : super(

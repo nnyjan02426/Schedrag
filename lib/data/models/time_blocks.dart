@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' show Color;
 import 'package:schedrag/data/models/blocks.dart';
 
 class TimeBlock extends Block {
@@ -15,6 +16,7 @@ class TimeBlock extends Block {
       {super.name,
       super.category,
       super.notes,
+      super.color,
       DateTime? startTime,
       DateTime? endTime})
       : super.detail() {
@@ -44,6 +46,7 @@ class TimeBlock extends Block {
       'startTime': startTime.toString(),
       'endTime': endTime.toString(),
       'notes': notes,
+      'color': color.value.toRadixString(16),
     };
   }
 
@@ -55,6 +58,7 @@ class TimeBlock extends Block {
       startTime: DateTime.tryParse(data['startTime'].toString()),
       endTime: DateTime.tryParse(data['endTime'].toString()),
       notes: data['notes'].toString(),
+      color: Color(int.parse(data['color'].toString(), radix: 16)),
     );
   }
 }
@@ -65,7 +69,8 @@ class TimeBlocksDb extends BlocksDb {
     name TEXT, category TEXT,
     startTime DATETIME,
     endTime DATETIME,
-    notes TEXT''';
+    notes TEXT, color TEXT
+    ''';
 
   TimeBlocksDb()
       : super(
