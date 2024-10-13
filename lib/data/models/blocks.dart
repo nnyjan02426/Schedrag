@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/widgets.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path_provider/path_provider.dart';
@@ -5,8 +6,8 @@ import 'package:path/path.dart';
 
 abstract class Block {
   String? name;
-  String? category = null, notes = null;
-  int? id = null;
+  String? category, notes;
+  int? id;
 
   Block();
   Block.name(this.name);
@@ -21,13 +22,18 @@ abstract class Block {
 
 abstract class BlocksDb extends ChangeNotifier {
   String dbFilename, tableName, executeSQL;
-  bool dbIsOpen = false;
-  late var db;
+  bool dbIsOpen;
+  Database? db;
 
   BlocksDb(
       {required this.dbFilename,
       required this.tableName,
-      required this.executeSQL});
+      required this.executeSQL})
+      : dbIsOpen = false;
+
+  DateTime setTime(
+          {int month = 0, int day = 0, int hour = 0, int minute = 0}) =>
+      DateTime(2000, month, day, hour, minute);
 
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
@@ -51,35 +57,36 @@ abstract class BlocksDb extends ChangeNotifier {
   }
 
   Future<Block> insert(Block block) async {
-    if (!dbIsOpen) open();
+    if (!dbIsOpen) await open();
 
-    block.id = await db.insert(tableName, block.toMap());
+    block.id = await db?.insert(tableName, block.toMap());
+    if (kDebugMode) {
+      print('$tableName: ${block.name} inserted');
+    }
     notifyListeners();
     return block;
   }
 
-  Future<int> delete(int id) async {
-    if (!dbIsOpen) open();
+  Future<void> delete(int id) async {
+    if (!dbIsOpen) await open();
 
-    var idx = await db.delete(tableName, where: 'id = ?', whereArgs: [id]);
+    await db?.delete(tableName, where: 'id = ?', whereArgs: [id]);
     notifyListeners();
-    return idx;
   }
 
-  Future<int> update(Block aBlock) async {
-    if (!dbIsOpen) open();
+  Future<void> update(Block block) async {
+    if (!dbIsOpen) await open();
 
-    var idx = await db.update(tableName, aBlock.toMap(),
-        where: 'id = ?', whereArgs: [aBlock.id]);
+    await db?.update(tableName, block.toMap(),
+        where: 'id = ?', whereArgs: [block.id]);
     notifyListeners();
-    return idx;
   }
 
   Future close() async {
     dbIsOpen = false;
-    return await db.close();
+    return await db?.close();
   }
 
-  Future<int> getCount() async =>
-      await db.execute('SELECT COUNT(*) from $tableName');
+  Future getCount() async =>
+      await db?.execute('SELECT COUNT(*) from $tableName');
 }

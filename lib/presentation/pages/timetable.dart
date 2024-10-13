@@ -1,8 +1,8 @@
 import 'dart:io' show Platform;
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
-import 'package:schedrag/data/models/child_blocks.dart';
+import 'package:schedrag/data/models/time_blocks.dart';
 
 class TimetablePage extends StatefulWidget {
   const TimetablePage({super.key});
@@ -26,8 +26,8 @@ class _TimetablePageState extends State<TimetablePage> {
     CustomMultiDayConfiguration(
       name: 'Day',
       numberOfDays: 1,
-      startHour: 6,
-      endHour: 18,
+      startHour: 3,
+      endHour: 23,
     ),
     CustomMultiDayConfiguration(
       name: 'Custom',
@@ -39,35 +39,30 @@ class _TimetablePageState extends State<TimetablePage> {
     ScheduleConfiguration(),
   ];
 
+  TimeBlocksDb? db;
+
   @override
   void initState() {
     super.initState();
-    // add new event
-    //DateTime now = DateTime.now();
-    //eventController.addEvents([
-    //  CalendarEvent(
-    //    dateTimeRange: DateTimeRange(
-    //      start: now,
-    //      end: now.add(const Duration(hours: 1)),
-    //    ),
-    //    eventData: TimeBlock.name('Event 1'),
-    //  ),
-    //  CalendarEvent(
-    //    dateTimeRange: DateTimeRange(
-    //      start: now.add(const Duration(hours: 2)),
-    //      end: now.add(const Duration(hours: 5)),
-    //    ),
-    //    eventData: TimeBlock.name('Event 2'),
-    //  ),
-    //  CalendarEvent(
-    //    dateTimeRange: DateTimeRange(
-    //      start: DateTime(now.year, now.month, now.day),
-    //      end: DateTime(now.year, now.month, now.day)
-    //          .add(const Duration(days: 2)),
-    //    ),
-    //    eventData: TimeBlock.name('Event 3'),
-    //  ),
-    //]);
+
+    // load events from database
+    db = TimeBlocksDb();
+    db?.getAll().then((List<TimeBlock>? timeblocksdb) {
+      if (timeblocksdb != null) {
+        for (TimeBlock block in timeblocksdb) {
+          eventController.addEvent(CalendarEvent(
+            dateTimeRange:
+                DateTimeRange(start: block.startTime, end: block.endTime),
+            eventData: block,
+          ));
+        }
+        if (kDebugMode) {
+          print('Fetched ${timeblocksdb.length} events from the database');
+        }
+      } else if (kDebugMode) {
+        print('No events found in database');
+      }
+    });
   }
 
   @override
@@ -100,7 +95,7 @@ class _TimetablePageState extends State<TimetablePage> {
   CalendarEvent<TimeBlock> _onCreateEvent(DateTimeRange dateTimeRange) {
     return CalendarEvent(
       dateTimeRange: dateTimeRange,
-      eventData: TimeBlock.name('New Event'),
+      eventData: TimeBlock.name('new event'),
     );
   }
 
@@ -110,6 +105,8 @@ class _TimetablePageState extends State<TimetablePage> {
 
     // Deselect the event.
     eventController.deselectEvent();
+    event.eventData!.setTimes(event.start, event.end);
+    db?.insert(event.eventData!);
   }
 
   Future<void> _onEventTapped(
@@ -129,6 +126,9 @@ class _TimetablePageState extends State<TimetablePage> {
     if (isMobile) {
       eventController.deselectEvent();
     }
+
+    event.eventData!.setTimes(event.start, event.end);
+    db?.update(event.eventData!);
   }
 
   Widget _tileBuilder(

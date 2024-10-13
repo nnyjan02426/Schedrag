@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
-import 'package:schedrag/data/models/child_blocks.dart';
+import 'package:schedrag/data/models/todo_blocks.dart';
 import 'package:schedrag/presentation/widgets/todo_entry_form.dart';
 
 class TodoPage extends StatefulWidget {
@@ -14,17 +14,17 @@ class TodoPage extends StatefulWidget {
 }
 
 class _TodoPageState extends State<TodoPage> {
-  late Future<List<TimeBlock>?> dbList;
+  late Future<List<TodoBlock>?> dbList;
   var num = 0;
 
   @override
   Widget build(context) {
     return ChangeNotifierProvider(
-      create: (context) => TimeBlocksDb(),
-      child: Consumer<TimeBlocksDb>(builder: (context, timeblocksdb, child) {
-        dbList = timeblocksdb.getAll();
+      create: (context) => TodoBlocksDb(),
+      child: Consumer<TodoBlocksDb>(builder: (context, todoblocksdb, child) {
+        dbList = todoblocksdb.getAll();
         return Scaffold(
-          body: FutureBuilder<List<TimeBlock>?>(
+          body: FutureBuilder<List<TodoBlock>?>(
             builder: (con, snap) {
               if (snap.hasData) {
                 return ListView.builder(
@@ -52,7 +52,7 @@ class _TodoPageState extends State<TodoPage> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => EntryForm(db: timeblocksdb),
+                    builder: (context) => EntryForm(db: todoblocksdb),
                   ));
             },
             child: const Icon(Icons.add),

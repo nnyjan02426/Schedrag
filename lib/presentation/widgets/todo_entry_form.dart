@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:schedrag/data/models/child_blocks.dart';
+import 'package:schedrag/data/models/todo_blocks.dart';
 import 'package:date_field/date_field.dart';
 
 enum Tags { name, category, notes }
 
 class EntryForm extends StatefulWidget {
-  final TimeBlocksDb? db;
+  final TodoBlocksDb? db;
   const EntryForm({super.key, required this.db});
 
   @override
@@ -13,7 +13,7 @@ class EntryForm extends StatefulWidget {
 }
 
 class _EntryFormState extends State<EntryForm> {
-  final TimeBlocksDb? db;
+  final TodoBlocksDb? db;
 
   final _formKey = GlobalKey<FormState>();
   final List<TextEditingController> controllers =
@@ -88,7 +88,7 @@ class _EntryFormState extends State<EntryForm> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           if (db != null && _formKey.currentState!.validate()) {
-            db?.insert(TimeBlock.detail(
+            db?.insert(TodoBlock.detail(
                 name: controllers[Tags.name.index].text,
                 category: controllers[Tags.category.index].text,
                 estimatedTime: times[0],
