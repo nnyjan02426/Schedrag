@@ -29,11 +29,6 @@ class TimeBlock extends Block {
     }
   }
 
-  void setTimes(DateTime? start, DateTime? end) {
-    if (start != null) startTime = start;
-    if (end != null) endTime = end;
-  }
-
   @override
   void setDetail(
       {String? name,

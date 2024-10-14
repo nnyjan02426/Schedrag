@@ -106,7 +106,7 @@ class _TimetablePageState extends State<TimetablePage> {
 
     // Deselect the event.
     eventController.deselectEvent();
-    event.eventData!.setTimes(event.start, event.end);
+    event.eventData!.setDetail(startTime: event.start, endTime: event.end);
     db?.insert(event.eventData!);
   }
 
@@ -137,7 +137,7 @@ class _TimetablePageState extends State<TimetablePage> {
       eventController.deselectEvent();
     }
 
-    event.eventData!.setTimes(event.start, event.end);
+    event.eventData!.setDetail(startTime: event.start, endTime: event.end);
     db?.update(event.eventData!);
   }
 

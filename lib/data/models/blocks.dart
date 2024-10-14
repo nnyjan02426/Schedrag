@@ -69,7 +69,6 @@ abstract class BlocksDb extends ChangeNotifier {
     if (!dbIsOpen) await open();
 
     int? id = await db?.insert(tableName, block.toMap());
-    if (id == null) print("Faild to insert block");
 
     block.id = id;
     if (kDebugMode) {
