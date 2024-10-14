@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:schedrag/data/models/todo_blocks.dart';
+import 'package:schedrag/presentation/widgets/todo_edit_form.dart';
 import 'package:schedrag/presentation/widgets/todo_entry_form.dart';
 
 class TodoPage extends StatefulWidget {
@@ -37,9 +37,16 @@ class _TodoPageState extends State<TodoPage> {
                           title: Text(snap.data![index].name.toString()),
                           onTap: () {
                             if (kDebugMode) {
-                              print(join("[name]: ",
-                                  snap.data![index].name.toString()));
+                              print(
+                                  "[name]: ${snap.data![index].name.toString()}");
                             }
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EditForm(
+                                      db: todoblocksdb,
+                                      block: snap.data![index]),
+                                ));
                           }),
                     );
                   },

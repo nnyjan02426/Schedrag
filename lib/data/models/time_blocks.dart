@@ -7,13 +7,10 @@ class TimeBlock extends Block {
   TimeBlock()
       : startTime = DateTime.now(),
         endTime = DateTime.now();
-  TimeBlock.name(super.name)
-      : startTime = DateTime.now(),
-        endTime = DateTime.now(),
-        super.name();
 
   TimeBlock.detail(
-      {super.name,
+      {required super.name,
+      super.id,
       super.category,
       super.notes,
       super.color,
@@ -38,6 +35,19 @@ class TimeBlock extends Block {
   }
 
   @override
+  void setDetail(
+      {String? name,
+      String? category,
+      String? notes,
+      DateTime? startTime,
+      DateTime? endTime,
+      Color? color}) {
+    super.setDetail(name: name, category: category, notes: notes, color: color);
+    if (startTime != null) this.startTime = startTime;
+    if (endTime != null) this.endTime = endTime;
+  }
+
+  @override
   Map<String, Object?> toMap() {
     return {
       'id': id,
@@ -46,7 +56,7 @@ class TimeBlock extends Block {
       'startTime': startTime.toString(),
       'endTime': endTime.toString(),
       'notes': notes,
-      'color': color.value.toRadixString(16),
+      'color': color?.value.toRadixString(16),
     };
   }
 
@@ -54,6 +64,7 @@ class TimeBlock extends Block {
   TimeBlock toBlock(Map<String, Object?> data) {
     return TimeBlock.detail(
       name: data['name'].toString(),
+      id: int.parse(data['id'].toString()),
       category: data['category'].toString(),
       startTime: DateTime.tryParse(data['startTime'].toString()),
       endTime: DateTime.tryParse(data['endTime'].toString()),

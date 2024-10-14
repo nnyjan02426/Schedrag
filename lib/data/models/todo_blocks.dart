@@ -7,19 +7,16 @@ class TodoBlock extends Block {
   TodoBlock()
       : estimatedTime = DateTime.now(),
         deadline = DateTime.now();
-  TodoBlock.name(super.name)
-      : estimatedTime = DateTime.now(),
-        deadline = DateTime.now(),
-        super.name();
 
-  TodoBlock.detail(
-      {super.name,
-      super.category,
-      super.notes,
-      super.color,
-      DateTime? estimatedTime,
-      DateTime? deadline})
-      : super.detail() {
+  TodoBlock.detail({
+    required super.name,
+    super.id,
+    super.category,
+    super.notes,
+    DateTime? estimatedTime,
+    DateTime? deadline,
+    super.color,
+  }) : super.detail() {
     if (estimatedTime == null) {
       this.estimatedTime = DateTime.now();
     } else {
@@ -33,6 +30,19 @@ class TodoBlock extends Block {
   }
 
   @override
+  void setDetail(
+      {String? name,
+      String? category,
+      String? notes,
+      DateTime? estimatedTime,
+      DateTime? deadline,
+      Color? color}) {
+    super.setDetail(name: name, category: category, notes: notes, color: color);
+    if (estimatedTime != null) this.estimatedTime = estimatedTime;
+    if (deadline != null) this.deadline = deadline;
+  }
+
+  @override
   Map<String, Object?> toMap() {
     return {
       'id': id,
@@ -41,7 +51,7 @@ class TodoBlock extends Block {
       'estimatedTime': estimatedTime.toString(),
       'deadline': deadline.toString(),
       'notes': notes,
-      'color': color.value.toRadixString(16),
+      'color': color?.value.toRadixString(16),
     };
   }
 
@@ -49,6 +59,7 @@ class TodoBlock extends Block {
   TodoBlock toBlock(Map<String, Object?> data) {
     return TodoBlock.detail(
       name: data['name'].toString(),
+      id: int.parse(data['id'].toString()),
       category: data['category'].toString(),
       estimatedTime: DateTime.tryParse(data['estimatedTime'].toString()),
       deadline: DateTime.tryParse(data['deadline'].toString()),

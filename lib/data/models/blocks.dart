@@ -8,17 +8,28 @@ abstract class Block {
   String? name;
   String? category, notes;
   int? id;
-  Color color;
+  Color? color;
 
   Block() : color = Colors.white;
-  Block.name(this.name) : color = Colors.white;
   Block.detail(
-      {this.name, this.category, this.notes, this.color = Colors.white});
+      {required String this.name,
+      int? id,
+      String? category,
+      String? notes,
+      this.color = Colors.white}) {
+    if (id != null) this.id = id;
+    if (category != null) this.category = category;
+    if (notes != null) this.notes = notes;
+  }
 
   Map<String, Object?> toMap();
   Block toBlock(Map<String, Object?> data);
-  void setID(int id) {
-    this.id = id;
+  void setDetail(
+      {String? name, String? category, String? notes, Color? color}) {
+    if (name != null) this.name = name;
+    if (category != null) this.category = category;
+    if (notes != null) this.notes = notes;
+    if (color != null) this.color = color;
   }
 }
 
@@ -57,7 +68,10 @@ abstract class BlocksDb extends ChangeNotifier {
   Future<Block> insert(Block block) async {
     if (!dbIsOpen) await open();
 
-    block.id = await db?.insert(tableName, block.toMap());
+    int? id = await db?.insert(tableName, block.toMap());
+    if (id == null) print("Faild to insert block");
+
+    block.id = id;
     if (kDebugMode) {
       print('$tableName: ${block.name} inserted');
     }
@@ -72,12 +86,16 @@ abstract class BlocksDb extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> update(Block block) async {
+  Future<int?> update(Block block) async {
     if (!dbIsOpen) await open();
+    if (block.id == null) {
+      throw Exception("The block ID is null, cannot update the record.");
+    }
 
-    await db?.update(tableName, block.toMap(),
+    int? counter = await db?.update(tableName, block.toMap(),
         where: 'id = ?', whereArgs: [block.id]);
     notifyListeners();
+    return counter;
   }
 
   Future close() async {

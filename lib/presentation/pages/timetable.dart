@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:kalender/kalender.dart';
 import 'package:schedrag/data/models/time_blocks.dart';
+import 'package:schedrag/presentation/widgets/time_edit_form.dart';
 
 class TimetablePage extends StatefulWidget {
   const TimetablePage({super.key});
@@ -29,10 +30,10 @@ class _TimetablePageState extends State<TimetablePage> {
       startHour: 3,
       endHour: 23,
     ),
-    CustomMultiDayConfiguration(
-      name: 'Custom',
-      numberOfDays: 1,
-    ),
+    //CustomMultiDayConfiguration(
+    //  name: 'Custom',
+    //  numberOfDays: 1,
+    //),
     WeekConfiguration(),
     WorkWeekConfiguration(),
     MonthConfiguration(),
@@ -95,7 +96,7 @@ class _TimetablePageState extends State<TimetablePage> {
   CalendarEvent<TimeBlock> _onCreateEvent(DateTimeRange dateTimeRange) {
     return CalendarEvent(
       dateTimeRange: dateTimeRange,
-      eventData: TimeBlock.name('new event'),
+      eventData: TimeBlock.detail(name: 'new event'),
     );
   }
 
@@ -117,6 +118,15 @@ class _TimetablePageState extends State<TimetablePage> {
           ? eventController.deselectEvent()
           : eventController.selectEvent(event);
     }
+    if (kDebugMode) {
+      print("[name]: ${event.eventData?.name.toString()}");
+    }
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => EditForm(db: db, block: event.eventData),
+        ));
+    //initState();
   }
 
   Future<void> _onEventChanged(
@@ -143,7 +153,7 @@ class _TimetablePageState extends State<TimetablePage> {
       elevation: configuration.tileType == TileType.ghost ? 0 : 8,
       color: configuration.tileType != TileType.ghost
           ? event.eventData?.color
-          : event.eventData?.color.withAlpha(100),
+          : event.eventData?.color?.withAlpha(100),
       child: Center(
         child: configuration.tileType != TileType.ghost
             ? Text(event.eventData?.name ?? 'New Event')
