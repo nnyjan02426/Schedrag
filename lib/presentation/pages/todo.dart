@@ -30,14 +30,18 @@ class _TodoPageState extends State<TodoPage> {
                 return ListView.builder(
                   itemCount: snap.data!.length,
                   itemBuilder: (context, index) {
-                    return ListTile(
-                        title: Text(snap.data![index].name.toString()),
-                        onTap: () {
-                          if (kDebugMode) {
-                            print(join(
-                                "[name]: ", snap.data![index].name.toString()));
-                          }
-                        });
+                    return Card(
+                      color: snap.data![index].color,
+                      elevation: 3,
+                      child: ListTile(
+                          title: Text(snap.data![index].name.toString()),
+                          onTap: () {
+                            if (kDebugMode) {
+                              print(join("[name]: ",
+                                  snap.data![index].name.toString()));
+                            }
+                          }),
+                    );
                   },
                 );
               } else {

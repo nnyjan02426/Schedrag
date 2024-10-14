@@ -141,6 +141,9 @@ class _TimetablePageState extends State<TimetablePage> {
       ),
       margin: EdgeInsets.zero,
       elevation: configuration.tileType == TileType.ghost ? 0 : 8,
+      color: configuration.tileType != TileType.ghost
+          ? event.eventData?.color
+          : event.eventData?.color.withAlpha(100),
       child: Center(
         child: configuration.tileType != TileType.ghost
             ? Text(event.eventData?.name ?? 'New Event')
@@ -156,6 +159,9 @@ class _TimetablePageState extends State<TimetablePage> {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 2),
       elevation: configuration.tileType == TileType.selected ? 8 : 0,
+      color: configuration.tileType != TileType.ghost
+          ? event.eventData?.color
+          : null,
       child: Center(
         child: configuration.tileType != TileType.ghost
             ? Text(event.eventData?.name ?? 'New Event')
@@ -167,6 +173,7 @@ class _TimetablePageState extends State<TimetablePage> {
   Widget _scheduleTileBuilder(CalendarEvent<TimeBlock> event, DateTime date) {
     return DecoratedBox(
       decoration: BoxDecoration(
+        color: event.eventData?.color,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(event.eventData?.name ?? 'New Event'),
